@@ -1,0 +1,59 @@
+#This file resum config to apply on openwrt in nexx router to get wireless client and AP at the same time, no more cable to connect to tor ;) only wifi
+(original : https://bitbucket.org/pklaus/openwrt-configurations/branches/compare/TP-Link_TL-MR3020%2Fwisp%0DTP-Link_TL-MR3020%2Fdefault#diff)
+
+------------------------------------------------------
+in /etc/config/firewall
+change wan config to this one:
+
+config zone
+        option name             wan
+        list   network          'wan wan6 wwan'
+        option input            REJECT
+        option output           ACCEPT
+        option forward          REJECT
+        option masq             1
+        option mtu_fix          1
+                                 
+                                 
+                                 
+                                 
+------------------------------------------------------                                 
+                                 
+                                 
+in /etc/config/network
+add those lines
+
+config interface 'wwan'
+	option proto 'dhcp'
+
+-------------------------------------------------------                                                       
+in /etc/config/wireless
+change config to correspond to something like this (depend on version of openwrt,firmware, and hardware)
+
+config wifi-device 'radio0'
+        option type 'mac80211'
+        option hwmode '11g'
+        option path 'platform/10180000.wmac'
+        option htmode 'HT20'
+        option disabled '0'
+        option channel '10'
+        option country '00'
+        option channel 'auto'
+                                                  
+config wifi-iface 'default_radio0'
+        option device 'radio0'
+        option network 'lan'
+        option mode 'ap'
+        option ssid 'SSID ACCESS POINT'
+        option encryption 'psk2'
+        option key 'PASSWORD ACCESS POINT'
+        option disabled '0'
+                                                                                                                        
+config wifi-iface
+        option device 'radio0'
+        option mode 'sta'
+        option ssid 'WIFI TO ACCESS INTERNET or any network'
+        option network 'wwan'
+        option encryption 'psk2'
+        option key 'PASSWORD WIFI'
+        option disabled '0'
